@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+</head>
+<body>
+
+    <div id="app">
+        <!-- 뷰지정공간안 컴포넌트 이름의 태그로불러옴 -->
+        <!-- 새로운태글르만듬 : html요소확장 -->
+        <!-- 안의 내용을 알수없음 ,간단하게 쓸수 있음: 캡슐화 -->
+        <my-component></my-component>
+        <my-component></my-component>
+
+      <!-- vue인스턴스에 등록된 지역컴포넌트 -->
+      <vuein-component></vuein-component>
+
+        <!-- 컴포넌트 안에 컴포넌트를 사용하여 불러옴 -->
+        <used-component></used-component>
+
+          
+
+        <mychild-component></mychild-component>
+        <mychild2-component></mychild2-component>
+        
+    </div>
+    <script>
+        //전역으로 등록된 컴포넌트
+        //컴포넌트등록뷰위컴포넌트작성
+        //my-component로등록됨
+        Vue.component('my-component',{
+            template : 
+            //반드시 하나의 요소로 내보낼것 최종내보내는 요소 감싸는div하나여야함
+            //html요소이용하여 화면구성백틱아니면 ''사용가능한데한줄로만작성가능
+            `   <div>
+                    <p>{{message}}</p>
+                    <p>{{count}}</p>
+                    <button v-on:click="countUp">숫자가올라갑니다</button>
+                    <button @click="countDown">숫자가내려갑니다</button>
+                    <button @click="count=0">숫자0메서드사용안하기</button>
+                </div>
+            `,
+            //data는 반드시 함수를 사용해서 객체를 return사용
+            data : function () {
+                return{
+                    message : "컴포넌트의 메세지입니다",
+                    count : 0,//메서드사용위해 카운트숫자값
+                  
+                }
+            },
+            methods :{
+                countUp : function() {
+                    this.count++;//1씩올라가게 
+                },
+                countDown : function() {
+                    this.count -=1;//1씩감소복합연산자
+                }
+            }
+        })
+        new Vue({//최상위부모
+            el:"#app",
+        })
+        //다른컴포넌트에서 사용하기 위한 컴포넌트
+        Vue.component('small-component', {
+            template : `<p>hi</p>`//하ㅏㄴ의 태그사용시p태그사용
+        })
+
+        //다른컴포넌트를 템플릿에 불러와서 사용 htmldiv안에등록
+        Vue.component('used-component',{
+            template : `
+            <div>
+                <p>used컴포넌트입니다</p>
+                <!--전역컴포넌트를 불러옴-->
+                <small-component></small-component>
+              
+            </div>
+            `
+            //small-component가 자식 used-component가 부모로나옴
+            //  <!-- used-component안의 template에 사용하면 에러뜸 지역컴포넌트라서-->
+            //<vuein-component></vuein-component>
+        })
+        //함수안 변수는 함수끝나면 쓸수없음  vue안 components
+        //변수 따로 빼서 사용가능  변수의 객체 부분만 이안에 따로 넣어서 사용가능
+        //뷰안컴포넌트넣고 실행하면 그 겈ㅁ포넌트는 뷰안에만 속해진 컴포넌트 다른 컴포넌트에 사용못함 컴포넌트들도 안의 값들을 동일하게 지정가능 
+        //다른컴포넌ㅌ안의 components속성등록가능
+        //지역컴포넌트 #app에서만사용가능 다른컴포넌트사용하면 에러뜸
+        new Vue({
+            el:"#app",
+            components : {//지역컴포넌트는 s붙여야됨
+                'vuein-component' : {//컴포넌트안 여러가지객체사용
+                    template : `<p>div#app에서만 (Vue인스턴스에서만) 쓸수있는 컴포넌트입니다</p>`
+                },//data나 methods도 사용가능
+                'mychild-component' : {
+                    template : `<P>Vue인스턴스의 첫번째 지역컴포넌트</P>`
+                },//객체안 여러개넣을때 쉼표로
+                'mychild2-component' : {
+                    template : `<P>Vue인스턴스의 두번째 지역컴포넌트</P>`
+                },//객체
+            }
+        })
+     
+    </script>
+</body>
+</html>
